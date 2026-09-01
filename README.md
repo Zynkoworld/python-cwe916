@@ -7,13 +7,16 @@ decides, for a given piece of Python code and a line number, whether that line e
 (CWE-916).
 
 ## Proven
-Measured on a **discriminating** probe corpus of **20 cases (8 flagged + 12 safe)** — verified by
+Measured on a **discriminating** probe corpus of **24 cases (10 flagged + 14 safe)** — verified by
 running the oracle, not asserted. The corpus includes **held-out adversarial cases**
 (boundary values and near-misses) that were written after the decider, not alongside it:
 
 ```
 recall = 1.000    false_positives = 0    non-degenerate = yes  ->  PASS
 ```
+
+These numbers hold **on the published probe set (N=24)**. A probe set is a floor, not a
+coverage measure — see *Known limitations* below.
 
 `verify.py` (stdlib only, no network) is the CI gate.
 
@@ -27,6 +30,22 @@ top of `oracle/python_cwe916_weak_kdf_cost.py`, and the oracle claims nothing be
 and where a value is not visible in the source (a name, a call, a runtime setting) the decider returns `SAFE`
 rather than guessing. Treat a `FLAG` as *a case that meets the stated syntactic condition*, which is an input
 to a human judgement, not a substitute for one.
+
+## Known limitations (measured, not guessed)
+This decider was hardened after an independent adversarial review (10 divergences found across the first
+wave, nine of them from a single root: deciding on the *call name* instead of the *import binding*). It now
+resolves aliases, function references and `getattr` indirection, and excludes locally shadowed names.
+What it still cannot see:
+
+- **Dynamic construction.** A callable assembled at run time (`ops[key](x)`, a name rebound inside a
+  branch, a value read from configuration) has no static binding, so the decider returns `SAFE`.
+- **Cross-file flow.** Only the submitted source is parsed. A wrapper defined in another module is not
+  followed.
+- **Value provenance.** Where a value is not a literal or a module-level constant, the decider does not
+  guess what it holds.
+
+`SAFE` therefore means *"the stated syntactic condition was not established here"*, not *"this code is
+secure"*. The corpus below is a floor on the decider's behaviour, not a measure of its coverage.
 
 ## License
 Apache-2.0 (see `LICENSE`).
