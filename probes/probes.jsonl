@@ -25,3 +25,4 @@
 {"code": "import hashlib\nITER = 1000\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, ITER)\n", "line": 3, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python", "origin": "adversarial (zafire #19241 re-measure: constant propagation)"}
 {"code": "import hashlib\nITER = 600000\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, ITER)\n", "line": 3, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python", "origin": "adversarial (zafire #19241 re-measure: constant propagation)"}
 {"code": "import bcrypt\nROUNDS = 8\ns = bcrypt.gensalt(rounds=ROUNDS)\n", "line": 3, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python", "origin": "adversarial (zafire #19241 re-measure: constant propagation)"}
+{"code": "import hashlib\nfn = 'pbkdf2_hmac'\nk = getattr(hashlib, fn)('sha256', pw, salt, 1000)\n", "line": 3, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python", "origin": "adversarial (zafire #19249: getattr constant-bound name)"}
