@@ -86,7 +86,12 @@ def _origin(call, binds, local):
 
 
 def _const_strs(tree):
-    """modul-szintu `NEV = "literal"` / `NEV = b"literal"` konstansok (konstans-propagacio)."""
+    """Egyszeru `NEV = <string/bytes literal>` ertekadasok BARHOL a fajlban.
+
+    FONTOS es szandekosan kimondva: ez NEM scope-erzekeny -- egy fuggvenyen BELULI ertekadas is
+    bekerul, es igy egy masik fuggvenyben szereplo AZONOS NEVU valtozora is ervenyesnek latszik.
+    Ez tudatos TUL-KOZELITES a rejtett literal fele; az arat a known_limitations.jsonl rogziti.
+    """
     out = {}
     for n in ast.walk(tree):
         if isinstance(n, ast.Assign) and isinstance(n.value, ast.Constant) \
@@ -100,11 +105,27 @@ def _const_strs(tree):
 def _int_literal(node, consts=None):
     if isinstance(node, ast.Constant) and isinstance(node.value, int) and not isinstance(node.value, bool):
         return node.value
+    if isinstance(node, ast.Name) and consts and node.id in consts:   # ITER = 1000; pbkdf2(..., ITER)
+        return consts[node.id]
     if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Pow):
-        a, b = _int_literal(node.left), _int_literal(node.right)
+        a, b = _int_literal(node.left, consts), _int_literal(node.right, consts)
         if a is not None and b is not None and 0 <= b < 64:
             return a ** b
     return None
+
+
+def _const_ints(tree):
+    """Egyszeru `NEV = <egesz>` ertekadasok BARHOL a fajlban -- NEM scope-erzekeny
+    (ld. known_limitations.jsonl).
+    """
+    out = {}
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Assign) and isinstance(n.value, ast.Constant) \
+                and isinstance(n.value.value, int) and not isinstance(n.value.value, bool):
+            for t in n.targets:
+                if isinstance(t, ast.Name):
+                    out[t.id] = n.value.value
+    return out
 
 
 def decide(code, line):
@@ -112,7 +133,7 @@ def decide(code, line):
         tree = ast.parse(code)
     except SyntaxError:
         return "SAFE"
-    binds, local = _bindings(tree), _local_defs(tree)
+    binds, local, consts = _bindings(tree), _local_defs(tree), _const_ints(tree)
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call) or getattr(node, "lineno", None) != line:
             continue
@@ -128,7 +149,7 @@ def decide(code, line):
             val = node.args[pos]
         if val is None:
             continue
-        n = _int_literal(val)
+        n = _int_literal(val, consts)
         if n is not None and n < floor:
             return "FLAG"
     return "SAFE"

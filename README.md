@@ -7,7 +7,7 @@ decides, for a given piece of Python code and a line number, whether that line e
 (CWE-916).
 
 ## Proven
-Measured on a **discriminating** probe corpus of **24 cases (10 flagged + 14 safe)** — verified by
+Measured on a **discriminating** probe corpus of **27 cases (12 flagged + 15 safe)** — verified by
 running the oracle, not asserted. The corpus includes **held-out adversarial cases**
 (boundary values and near-misses) that were written after the decider, not alongside it:
 
@@ -15,7 +15,7 @@ running the oracle, not asserted. The corpus includes **held-out adversarial cas
 recall = 1.000    false_positives = 0    non-degenerate = yes  ->  PASS
 ```
 
-These numbers hold **on the published probe set (N=24)**. A probe set is a floor, not a
+These numbers hold **on the published probe set (N=27)**. A probe set is a floor, not a
 coverage measure — see *Known limitations* below.
 
 `verify.py` (stdlib only, no network) is the CI gate.
@@ -46,6 +46,12 @@ What it still cannot see:
 
 `SAFE` therefore means *"the stated syntactic condition was not established here"*, not *"this code is
 secure"*. The corpus below is a floor on the decider's behaviour, not a measure of its coverage.
+
+Those limitations are **concrete and re-checkable**, not a disclaimer: `probes/known_limitations.jsonl`
+lists the exact forms this decider does not see, each with its current verdict and the reason. That file
+is deliberately **not** part of the `verify.py` gate — labelling those cases `SAFE` in the gate corpus
+would hide the gap instead of recording it. If a later version closes one of them, the change is visible
+there.
 
 ## License
 Apache-2.0 (see `LICENSE`).

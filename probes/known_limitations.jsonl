@@ -1,0 +1,2 @@
+{"_note": "NOT part of the verify.py gate. These are forms this decider cannot see; each is recorded with its current verdict so the gap is auditable rather than merely disclaimed.", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, cfg['iterations'])\n", "line": 2, "current_verdict": "SAFE", "reason": "konfiguraciobol olvasott koltseg -- az ertek nem lathato a forrasban", "cwe": "CWE-916", "lang": "python"}
