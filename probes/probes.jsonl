@@ -1,0 +1,20 @@
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, 1000)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, iterations=10000)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.scrypt(pw, salt=s, n=1024, r=8, p=1)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python"}
+{"code": "import bcrypt\ns = bcrypt.gensalt(rounds=4)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python"}
+{"code": "import bcrypt\ns = bcrypt.gensalt(6)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.scrypt(pw, salt=s, n=2 ** 10, r=8, p=1)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, 600000)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, iterations=210000)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.scrypt(pw, salt=s, n=16384, r=8, p=1)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import bcrypt\ns = bcrypt.gensalt(rounds=12)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import bcrypt\ns = bcrypt.gensalt()\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, ITERATIONS)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nh = hashlib.sha256(data).hexdigest()\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, cfg.iterations)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
+{"code": "import hashlib\nk = hashlib.scrypt(pw, salt=s, n=2 ** 20, r=8, p=1)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
+{"code": "x = range(1000)\n", "line": 1, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
+{"code": "import bcrypt\ns = bcrypt.gensalt(rounds=14)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, 100000)\n", "line": 2, "expected_verdict": "SAFE", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
+{"code": "import hashlib\nk = hashlib.pbkdf2_hmac('sha256', pw, salt, 99999)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
+{"code": "import bcrypt\ns = bcrypt.gensalt(rounds=11)\n", "line": 2, "expected_verdict": "FLAG", "cwe": "CWE-916", "lang": "python", "origin": "held-out adversarial (near-miss / boundary)"}
